@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "IE_create_data"
+version = "0.1.0"
+description = "To create data for the corpus to be used in an IE/IR project"
+authors = ["Erik Janusch"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.1"
+nltk = "^3.8.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
