@@ -1,14 +1,24 @@
 [tool.poetry]
-name = "IE_create_data"
+name = "Book Recommendation System"
 version = "0.1.0"
-description = "To create data for the corpus to be used in an IE/IR project"
+description = "Book Recommendation System using Sentence Transformer for Embeddings and FAISS to recommend books based on Amazon book reviews"
 authors = ["Erik Janusch"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pandas = "^2.2.1"
+pandas = "^2.2.2"
 nltk = "^3.8.1"
+dataset = "^1.6.2"
+datasets = "^2.19.1"
+transformers = "^4.41.1"
+PyQt5 = "=5.15.2"
+faiss-cpu = "^1.8.0"
+tensorflow = "^2.16.1"
+tf-keras = "^2.16.0"
+torch = "^2.3.0"
+
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+package-mode = false
