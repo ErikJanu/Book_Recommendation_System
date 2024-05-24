@@ -1,6 +1,6 @@
 # :book: Book Recommendation System :books:
 
-This project uses book reviews from [this Kaggle dataset](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews) to provide suitable books for a user query.
+This project uses book reviews from [this Kaggle dataset](https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews) for Book recommendations. A simple GUI asks for a query so that a (modifiable) number of books is recommended. By double-clicking on a book title or author, reviews will be shown in an additional window.
 
  
 # Requirements
