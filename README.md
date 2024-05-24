@@ -10,7 +10,11 @@ This project uses book reviews from [this Kaggle dataset](https://www.kaggle.com
 # Additional data
 Files not included in this repository:
 - The Kaggle Dataset
-- The embedded dataset
+- The Embedded dataset
+
+# To create the Embedded dataset:
+- Download Kaggle dataset
+- Run Preprocessing.py (will take several hours)
 
 # Usage
 In the project directory do:
