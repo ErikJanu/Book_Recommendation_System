@@ -3,7 +3,7 @@ import re
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QApplication, QDialog, QMainWindow, \
-    QLabel, QPushButton, QVBoxLayout, QWidget, QTextEdit, QSlider, QHBoxLayout
+    QLabel, QPushButton, QVBoxLayout, QWidget, QTextEdit, QSlider, QHBoxLayout, QScrollArea
 import requests
 
 from Embeddings import Embeddings
@@ -27,11 +27,6 @@ class MainWindow(QMainWindow):
         self.prompt_text = QLabel()
         self.prompt_text.setText("Enter what you are looking for in a book:")
         self.topHLayout.addWidget(self.prompt_text)
-
-        # self.loading_gif = QLabel()
-        # self.movie = QMovie("nyan_cat.gif")
-        # self.loading_gif.setMovie(self.movie)
-        # self.topHLayout.addWidget(self.loading_gif)
 
         self.topHLayoutWidget = QWidget()
         self.topHLayoutWidget.setLayout(self.topHLayout)
@@ -150,14 +145,21 @@ class MainWindow(QMainWindow):
             layout.addWidget(author_label)
 
             if "review/summary" in dataframe.columns and "review/text" in dataframe.columns:
+                scroll_area = QScrollArea()
+                scroll_content = QWidget()
+                scroll_layout = QVBoxLayout(scroll_content)
+
                 summaries = dataframe.iloc[row]['review/summary'].split('\n')
                 reviews = dataframe.iloc[row]['review/text'].split('\n')
                 for i, (summary, review) in enumerate(zip(summaries, reviews), start=1):
-                    combined_text = f"<b>{summary}</b>\n{review}"
+                    combined_text = f"<b>{summary}</b>\n{review}\n\n"
                     combined_label = QLabel(combined_text)
                     combined_label.setTextFormat(Qt.RichText)
                     combined_label.setWordWrap(True)
-                    layout.addWidget(combined_label)
+                    scroll_layout.addWidget(combined_label)
+
+                scroll_area.setWidget(scroll_content)
+                layout.addWidget(scroll_area)
 
             self.setLayout(layout)
 
