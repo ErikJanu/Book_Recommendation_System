@@ -3,9 +3,10 @@ name = "Book Recommendation System"
 version = "0.1.0"
 description = "Book Recommendation System using Sentence Transformer for Embeddings and FAISS to recommend books based on Amazon book reviews"
 authors = ["Erik Janusch"]
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.10"
 pandas = "^2.2.2"
 nltk = "^3.8.1"
 dataset = "^1.6.2"
