@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, TFAutoModel
 
 class Embeddings:
     def __init__(self):
-        self.dataset = load_from_disk('../data/book_dataset')
+        self.dataset = load_from_disk('data/book_dataset')
         self.model_ckpt = "sentence-transformers/multi-qa-mpnet-base-dot-v1"
         self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/multi-qa-mpnet-base-dot-v1")
         self.model = TFAutoModel.from_pretrained("sentence-transformers/multi-qa-mpnet-base-dot-v1", from_pt=True)
@@ -36,18 +36,18 @@ class Embeddings:
         first_hundred_k_dataset = set_of_100_000.map(
             lambda x: {"embeddings": self.get_embeddings(x["text"]).numpy()[0]}
         )
-        first_hundred_k_dataset.save_to_disk('first_hundred_k_dataset')
+        first_hundred_k_dataset.save_to_disk('data/first_hundred_k_dataset')
 
         # -------- SECOND PART OF DATASET -----------
         set_of_2nd_100_000 = self.dataset.select(range(100000, 200000))
         second_hundred_k_dataset = set_of_2nd_100_000.map(
             lambda x: {"embeddings": self.get_embeddings(x["text"]).numpy()[0]}
         )
-        second_hundred_k_dataset.save_to_disk('second_hundred_k_dataset')
+        second_hundred_k_dataset.save_to_disk('data/second_hundred_k_dataset')
 
         # -------- THIRD PART OF DATASET -----------
         third_and_final_books = self.dataset.select(range(200000, 221998))
         third_and_final_dataset = third_and_final_books.map(
             lambda x: {"embeddings": self.get_embeddings(x["text"]).numpy()[0]}
         )
-        third_and_final_dataset.save_to_disk('third_and_final_dataset')
+        third_and_final_dataset.save_to_disk('data/third_and_final_dataset')

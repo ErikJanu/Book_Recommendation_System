@@ -5,7 +5,7 @@ from datasets import Dataset
 class ReviewsWithMetadata:
     def __init__(self, book_review_data):
         self.book_reviews = book_review_data
-        self.metadata = pd.read_csv('../data/books_data.csv')
+        self.metadata = pd.read_csv('data/books_data.csv')
         self.books_and_metadata = pd.DataFrame()
         self.book_dataset = None
 
@@ -25,7 +25,7 @@ class ReviewsWithMetadata:
         print(f"Final merged dataset: {self.books_and_metadata.head()}")
 
     def write_merged_data_to_file(self):
-        self.books_and_metadata.to_csv('book_reviews_and_metadata_grouped.csv', encoding='utf-8', index=False)
+        self.books_and_metadata.to_csv('data/book_reviews_and_metadata_grouped.csv', encoding='utf-8', index=False)
 
     def create_huggingface_dataset(self):
         def concatenate_text(examples):
@@ -47,4 +47,4 @@ class ReviewsWithMetadata:
         self.book_dataset = self.book_dataset.map(concatenate_text)
 
     def save_huggingface_dataset_to_disk(self):
-        self.book_dataset.save_to_disk('book_dataset')
+        self.book_dataset.save_to_disk('data/book_dataset')
