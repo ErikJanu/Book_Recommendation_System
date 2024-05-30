@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 import sys
-from Index import Index
-from GUI import MainWindow
+from data_processing.Index import Index
+from gui.GUI import MainWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

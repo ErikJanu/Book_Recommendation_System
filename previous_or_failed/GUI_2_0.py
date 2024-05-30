@@ -23,7 +23,7 @@ def get_embeddings(text_list):
     return cls_pooling(model_output)
 
 
-### GUI ###
+### gui ###
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()

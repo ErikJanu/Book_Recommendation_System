@@ -1,6 +1,6 @@
 import pandas as pd
-from Embeddings import Embeddings
-from Index import Index
+from data_processing.Embeddings import Embeddings
+from data_processing.Index import Index
 
 embeddings = Embeddings()
 golden_df = pd.read_csv('golden_dataset.csv', sep=';')

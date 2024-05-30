@@ -5,7 +5,7 @@ from datasets import Dataset
 class ReviewsWithMetadata:
     def __init__(self, book_review_data):
         self.book_reviews = book_review_data
-        self.metadata = pd.read_csv('Data/books_data.csv')
+        self.metadata = pd.read_csv('../data/books_data.csv')
         self.books_and_metadata = pd.DataFrame()
         self.book_dataset = None
 

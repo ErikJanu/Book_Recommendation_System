@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, TFAutoModel
 
 class Embeddings:
     def __init__(self):
-        self.dataset = load_from_disk('book_dataset')
+        self.dataset = load_from_disk('../data/book_dataset')
         self.model_ckpt = "sentence-transformers/multi-qa-mpnet-base-dot-v1"
         self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/multi-qa-mpnet-base-dot-v1")
         self.model = TFAutoModel.from_pretrained("sentence-transformers/multi-qa-mpnet-base-dot-v1", from_pt=True)

@@ -6,7 +6,7 @@ pd.set_option('display.max_colwidth', None)
 
 class BookReviews:
     def __init__(self):
-        self.review_df = pd.read_csv('Data/Books_rating.csv')
+        self.review_df = pd.read_csv('../data/Books_rating.csv')
         self.grouped_df = pd.DataFrame()
 
     def explore_reviews(self):

@@ -1,5 +1,5 @@
-from Embeddings import Embeddings
-from BookReviews import BookReviews
+from data_processing.Embeddings import Embeddings
+from data_processing.BookReviews import BookReviews
 from ReviewsWithMetadata import ReviewsWithMetadata
 
 book_reviews = BookReviews()

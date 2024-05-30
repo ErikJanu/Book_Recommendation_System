@@ -18,6 +18,6 @@ Files not included in this repository:
 
 # Usage
 In the project directory do:
-- poetry shell
+- poetry shell (when needed)
 - poetry install
 - python3 Main.py to run the program *or* run the Main.py in an IDE such as PyCharm.

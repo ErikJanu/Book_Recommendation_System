@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QApplication, QDialo
     QLabel, QPushButton, QVBoxLayout, QWidget, QTextEdit, QSlider, QHBoxLayout, QScrollArea
 import requests
 
-from Embeddings import Embeddings
+from data_processing.Embeddings import Embeddings
 
 class MainWindow(QMainWindow):
     def __init__(self, dataset):

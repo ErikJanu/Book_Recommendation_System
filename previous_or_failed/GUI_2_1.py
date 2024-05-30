@@ -26,7 +26,7 @@ def get_embeddings(text_list):
     return cls_pooling(model_output)
 
 
-### GUI ###
+### gui ###
 class BookWidget(QWidget):
     def __init__(self, book):
         super(BookWidget, self).__init__()
