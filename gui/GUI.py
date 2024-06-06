@@ -3,10 +3,15 @@ import re
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QApplication, QDialog, QMainWindow, \
-    QLabel, QPushButton, QVBoxLayout, QWidget, QTextEdit, QSlider, QHBoxLayout, QScrollArea
+    QLabel, QPushButton, QVBoxLayout, QWidget, QTextEdit, QSlider, QHBoxLayout, QScrollArea, QSizePolicy, QDesktopWidget
 import requests
 
 from data_processing.Embeddings import Embeddings
+
+
+def normalize_length(content, length=60):
+    return content if len(content) < length else content[:length] + "..."
+
 
 class MainWindow(QMainWindow):
     def __init__(self, dataset):
@@ -17,25 +22,25 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Book Recommendation System")
-        self.setGeometry(300, 300, 1000, 400)
+        self.screen_width = QDesktopWidget().screenGeometry().width()
+        self.screen_height = QDesktopWidget().screenGeometry().height()
+        self.resize(int(self.screen_width * 0.4), int(self.screen_height * 0.4))
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QVBoxLayout()
 
         self.topHLayout = QHBoxLayout()
-
         self.prompt_text = QLabel()
         self.prompt_text.setText("Enter what you are looking for in a book:")
         self.topHLayout.addWidget(self.prompt_text)
-
         self.topHLayoutWidget = QWidget()
         self.topHLayoutWidget.setLayout(self.topHLayout)
-
         self.layout.addWidget(self.topHLayoutWidget)
 
         self.question_text_edit = QTextEdit()
+        self.question_text_edit.setFixedHeight(int(self.height() * 0.15))
+        self.question_text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.layout.addWidget(self.question_text_edit)
-        self.question_text_edit.setFixedHeight(50)
 
         self.slider_label = QLabel("")
         self.layout.addWidget(self.slider_label)
@@ -56,17 +61,17 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.submit_button)
 
         self.table = QTableWidget()
+        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.table.cellDoubleClicked.connect(self.show_info)
         self.layout.addWidget(self.table)
 
         self.central_widget.setLayout(self.layout)
 
     def on_submit(self):
-        # self.movie.start()
         question = self.question_text_edit.toPlainText()
         question_embedding = self.embeddings.get_embeddings([question]).numpy()
 
-        # score appears to be euclidean distance -> the lower the better
+        # score appears to be similar to euclidean distance -> the lower the better
         scores, samples = self.dataset.get_nearest_examples(
             "embeddings", question_embedding, k=30
         )
@@ -93,9 +98,6 @@ class MainWindow(QMainWindow):
             self.table.setItem(idx, 1, author_item)
 
         self.resize_columns()
-        #print(self.recommended_books_dataframe)
-
-        # self.movie.stop()
 
     def resize_columns(self):
         max_width = self.table.viewport().size().width()
@@ -105,27 +107,25 @@ class MainWindow(QMainWindow):
     def show_slider_value(self, value):
         self.slider_label.setText(f"Selected number of recommendations: {value}")
 
-    def update_progress(self, step, total_steps):
-        progress_value = int((step / total_steps) * self.progress_max)
-        self.bar.setValue(progress_value)
-        QApplication.processEvents()
-
     def show_info(self, row, column):
         item = self.table.item(row, column)
         if item:
-            dialog = self.InfoDialog(row, column, item.text(), self.recommended_books_dataframe)
+            dialog = self.InfoDialog(row, column, item.text(), self.recommended_books_dataframe, self)
             dialog.exec_()
 
     class InfoDialog(QDialog):
-        def __init__(self, row, column, content, dataframe, parent=None):
+        def __init__(self, row, column, content, dataframe, parent_window, parent=None):
             super().__init__(parent)
+            self.parent_window = parent_window
             self.setWindowTitle("Book Information")
             layout = QVBoxLayout()
+            self.resize(int(self.parent_window.screen_width * 0.3), int(self.parent_window.screen_height * 0.4))
 
-            title = dataframe.iloc[row]["Title"]
+            title = normalize_length(dataframe.iloc[row]["Title"])
             authors = ", ".join(re.findall(r"'(.*?)'", dataframe.iloc[row]['authors']))
             if authors == "":
                 authors = "Unknown Author"
+            authors = normalize_length(authors)
 
             if dataframe.iloc[row]['image'] != "-":
                 response = requests.get(dataframe.iloc[row]['image'])
@@ -137,12 +137,15 @@ class MainWindow(QMainWindow):
                 image_label.setAlignment(Qt.AlignCenter)
                 layout.addWidget(image_label)
 
-            title_label = QLabel(f"<h1>{title}</h1>")
-            author_label = QLabel(f"<h2><i>by {authors}</i></h2>")
+            title_label = QLabel(f"<h2>{title}</h2>")
+            author_label = QLabel(f"<h3><i>by {authors}</i></h3>")
             title_label.setAlignment(Qt.AlignCenter)
             author_label.setAlignment(Qt.AlignCenter)
             layout.addWidget(title_label)
             layout.addWidget(author_label)
+
+            # minus 40 to consider padding
+            max_width = max(title_label.sizeHint().width(), author_label.sizeHint().width(), self.size().width() - 40)
 
             if "review/summary" in dataframe.columns and "review/text" in dataframe.columns:
                 scroll_area = QScrollArea()
@@ -152,14 +155,18 @@ class MainWindow(QMainWindow):
                 summaries = dataframe.iloc[row]['review/summary'].split('\n')
                 reviews = dataframe.iloc[row]['review/text'].split('\n')
                 for i, (summary, review) in enumerate(zip(summaries, reviews), start=1):
-                    combined_text = f"<b>{summary}</b>\n{review}\n\n"
+                    combined_text = f"<b>{summary}: </b>{review}"
                     combined_label = QLabel(combined_text)
                     combined_label.setTextFormat(Qt.RichText)
                     combined_label.setWordWrap(True)
+                    combined_label.hasScaledContents()
+                    combined_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                    # *0.95 to leave some room for scrollbar etc.
+                    combined_label.setFixedWidth(int(max_width * 0.95))
                     scroll_layout.addWidget(combined_label)
 
+                scroll_content.setLayout(scroll_layout)
                 scroll_area.setWidget(scroll_content)
                 layout.addWidget(scroll_area)
 
             self.setLayout(layout)
-
